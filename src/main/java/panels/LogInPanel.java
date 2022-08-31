@@ -20,15 +20,13 @@ public class LogInPanel extends JPanel {
     private JTextField logInIDTextField;
     private JTextField logInPasswordTextField;
     private List<User> users;
-    private User user;
     private JPanel contentPanel;
     private JPanel logInButtonPanel;
     private JLabel alertLabel;
 
 
-    public LogInPanel(List<User> users, User user, JPanel contentPanel, JPanel logInButtonPanel) {
+    public LogInPanel(List<User> users, JPanel contentPanel, JPanel logInButtonPanel) {
         this.users = users;
-        this.user = user;
         this.contentPanel = contentPanel;
         this.logInButtonPanel = logInButtonPanel;
 
@@ -93,12 +91,11 @@ public class LogInPanel extends JPanel {
                     logInButtonPanel.removeAll();
                     this.removeAll();
 
-                    this.user = user;
-                    this.user.logIn();
+                    user.logIn();
 
                     saveUsers();
 
-                    logInButtonPanel.add(getUserAccountButton());
+                    logInButtonPanel.add(getUserAccountButton(user));
 
                     this.setVisible(false);
                     this.setVisible(true);
@@ -119,7 +116,7 @@ public class LogInPanel extends JPanel {
         }
     }
 
-    private JButton getUserAccountButton() {
+    private JButton getUserAccountButton(User user) {
         JButton button = new JButton(user.name());
         button.addActionListener(e -> {
             contentPanel.removeAll();

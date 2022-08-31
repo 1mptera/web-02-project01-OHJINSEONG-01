@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 import javax.swing.BorderFactory;
@@ -27,6 +28,7 @@ public class CreateIDPanel extends JPanel {
     private JCheckBox selectWomanCheckBox;
     private JLabel alertLabel;
     private String selectedGender = "";
+    private int creatId;
 
     public CreateIDPanel(List<User> users) {
         this.users = users;
@@ -195,8 +197,10 @@ public class CreateIDPanel extends JPanel {
             if (notInputError()) {
                 this.removeAll();
 
+                creatId();
+
                 User user = new User(inputNameTextField.getText(), inputIndentifyNumberTextField.getText(), selectedGender
-                        , createUserNameTextField.getText(), createPasswordTextField.getText(), "");
+                        , createUserNameTextField.getText(), createPasswordTextField.getText(), "",creatId);
                 users.add(user);
 
                 saveUsers();
@@ -212,6 +216,15 @@ public class CreateIDPanel extends JPanel {
             }
         });
         return button;
+    }
+
+    private void creatId() {
+        UsersLoader usersLoader = new UsersLoader();
+        try {
+            creatId = usersLoader.createId();
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void saveUsers() {

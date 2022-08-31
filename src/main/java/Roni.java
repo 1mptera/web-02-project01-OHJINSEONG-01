@@ -5,15 +5,17 @@ import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import models.Post;
 import models.Program;
 import models.User;
 import panels.ImagePanel;
 import panels.LogInPanel;
 import panels.MyProgramPanel;
+import panels.SharePostPanel;
+import utils.PostsLoader;
 import utils.UsersLoader;
 
 public class Roni {
-
     private JFrame frame;
     private JPanel contentPanel;
     private ImagePanel imagePanel;
@@ -22,6 +24,7 @@ public class Roni {
     private JPanel menuPanel;
     private JPanel logInButtonPanel;
     private List<Program> programs;
+    private List<Post> posts;
 
     public static void main(String[] args) throws FileNotFoundException {
         Roni roni = new Roni();
@@ -31,16 +34,17 @@ public class Roni {
 
     public Roni() throws FileNotFoundException {
         UsersLoader usersLoader = new UsersLoader();
-
+        PostsLoader postsLoader = new PostsLoader();
         users = new ArrayList<>();
+
         this.users = usersLoader.load();
+        this.posts = postsLoader.load();
     }
 
     private void run() {
-        user = new User("", "", "", "", "", "");
+        user = new User("", "", "", "", "", "", 0);
 
         programs = new ArrayList<>();
-
 
         frame = new JFrame("Roni");
         frame.setSize(1280, 720);
@@ -77,13 +81,20 @@ public class Roni {
         logInButtonPanel.setOpaque(false);
         menuPanel.add(logInButtonPanel);
 
-        if (!user.status().equals("logIn")) {
+        if (!user.status().equals(User.LOGIN)) {
             logInButtonPanel.add(logInButton());
         }
     }
 
     private JButton searchProgramButton() {
         JButton button = new JButton("프로그램 검색");
+        button.addActionListener(e -> {
+            for (User user1 : users) {
+                if (user1.status().equals(User.LOGIN)) {
+
+                }
+            }
+        });
         return button;
     }
 
@@ -91,10 +102,10 @@ public class Roni {
         JButton button = new JButton("나의 프로그램");
         button.addActionListener(e -> {
             for (User user1 : users) {
-                if (user1.status().equals("logIn")) {
+                if (user1.status().equals(User.LOGIN)) {
                     contentPanel.removeAll();
 
-                    JPanel myProgramPanel = new MyProgramPanel(user1,programs);
+                    JPanel myProgramPanel = new MyProgramPanel(user1, programs);
                     contentPanel.add(myProgramPanel);
 
                     contentPanel.setVisible(false);
@@ -107,6 +118,21 @@ public class Roni {
 
     private JButton shareExerciseBorad() {
         JButton button = new JButton("운동 공유 게시판");
+        button.addActionListener(e -> {
+            for (User user1 : users) {
+                if (user1.status().equals(User.LOGIN)) {
+                    contentPanel.removeAll();
+
+                    SharePostPanel sharePostPanel = new SharePostPanel(posts, contentPanel, user1);
+
+                    contentPanel.add(sharePostPanel);
+
+                    contentPanel.setVisible(false);
+                    contentPanel.setVisible(true);
+                    frame.setVisible(true);
+                }
+            }
+        });
         return button;
     }
 
@@ -115,7 +141,7 @@ public class Roni {
         button.addActionListener(e -> {
             contentPanel.removeAll();
 
-            JPanel logInPanel = new LogInPanel(users, user, contentPanel, logInButtonPanel);
+            JPanel logInPanel = new LogInPanel(users, contentPanel, logInButtonPanel);
             logInButton((LogInPanel) logInPanel);
             contentPanel.add(logInPanel);
 

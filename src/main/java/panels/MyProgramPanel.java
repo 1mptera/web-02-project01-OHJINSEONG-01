@@ -135,6 +135,4 @@ public class MyProgramPanel extends JPanel {
         });
         return button;
     }
-
-
 }

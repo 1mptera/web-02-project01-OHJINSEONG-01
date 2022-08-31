@@ -149,7 +149,7 @@ public class CreateProgramPanel extends JPanel {
         button.addActionListener(e -> {
             this.removeAll();
 
-            createDailyPlanPanel = new CreateDailyPlanPanel(dailyPlans, day, user,programs);
+            createDailyPlanPanel = new CreateDailyPlanPanel(dailyPlans, day, user, programs);
 
             this.add(createDailyPlanPanel);
 
@@ -193,7 +193,7 @@ public class CreateProgramPanel extends JPanel {
         button.addActionListener(e -> {
             this.removeAll();
 
-            Program program = new Program(inputTitleTextField.getText(), dailyPlans, 0, user.userName());
+            Program program = new Program(inputTitleTextField.getText(), dailyPlans, 0, user.userName(), user.id());
             programs.add(program);
 
             MyProgramPanel myProgramPanel = new MyProgramPanel(user, programs);
