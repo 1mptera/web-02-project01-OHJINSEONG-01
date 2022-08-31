@@ -126,7 +126,7 @@ public class CreateIDPanel extends JPanel {
     }
 
     private JLabel indentifyNumberLabel() {
-        JLabel label = new JLabel("주민등록번호   ex) 950858-19xxxxx");
+        JLabel label = new JLabel("주민등록번호   ex) 19950828-19xxxxx");
         label.setForeground(Color.WHITE);
         return label;
     }
@@ -200,7 +200,7 @@ public class CreateIDPanel extends JPanel {
                 creatId();
 
                 User user = new User(inputNameTextField.getText(), inputIndentifyNumberTextField.getText(), selectedGender
-                        , createUserNameTextField.getText(), createPasswordTextField.getText(), "",creatId);
+                        , createUserNameTextField.getText(), createPasswordTextField.getText(), "", creatId);
                 users.add(user);
 
                 saveUsers();

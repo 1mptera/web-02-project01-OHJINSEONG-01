@@ -8,13 +8,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
-import models.Post;
+import models.ExerciseCycle;
 
-public class PostsLoader {
-    public List<Post> load() throws FileNotFoundException {
-        List<Post> posts = new ArrayList<>();
+public class ExerciseCyclesLoader {
+    public List<ExerciseCycle> load() throws FileNotFoundException {
+        List<ExerciseCycle> exerciseCycles = new ArrayList<>();
 
-        File file = new File("loadPosts.csv");
+        File file = new File("loadExerciseCycles.csv");
 
         Scanner scanner = new Scanner(file);
 
@@ -23,19 +23,19 @@ public class PostsLoader {
 
             String[] words = line.split(",");
 
-            Post post = new Post(words[0], words[1], words[2], words[3], Integer.parseInt(words[4]),
-                    Integer.parseInt(words[5]), Integer.parseInt(words[6]), words[7], Integer.parseInt(words[8]));
+            ExerciseCycle exerciseCycle = new ExerciseCycle(words[0], Integer.parseInt(words[1])
+                    , Integer.parseInt(words[2]), words[3], Integer.parseInt(words[4]));
 
-            posts.add(post);
+            exerciseCycles.add(exerciseCycle);
         }
-        return posts;
+        return exerciseCycles;
     }
 
-    public void save(List<Post> posts) throws IOException {
-        FileWriter fileWriter = new FileWriter("loadPosts.csv");
+    public void save(List<ExerciseCycle> exerciseCycles) throws IOException {
+        FileWriter fileWriter = new FileWriter("loadExerciseCycles.csv");
 
-        for (Post post : posts) {
-            String line = post.toCsvRow();
+        for (ExerciseCycle exerciseCycle : exerciseCycles) {
+            String line = exerciseCycle.toCsvRow();
 
             fileWriter.write(line + "\n");
         }
@@ -45,7 +45,7 @@ public class PostsLoader {
     public int createId() throws FileNotFoundException {
         List<Integer> ids = new ArrayList<>();
 
-        File file = new File("loadPosts.csv");
+        File file = new File("loadExerciseCycles.csv");
 
         Scanner scanner = new Scanner(file);
 
@@ -53,7 +53,7 @@ public class PostsLoader {
             String line = scanner.nextLine();
 
             String[] words = line.split(",");
-            int id = Integer.parseInt(words[8]);
+            int id = Integer.parseInt(words[6]);
 
             ids.add(id);
         }

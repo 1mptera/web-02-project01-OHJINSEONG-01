@@ -7,6 +7,8 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.BorderFactory;
@@ -22,11 +24,14 @@ import models.Exercise;
 import models.ExerciseCycle;
 import models.Program;
 import models.User;
+import utils.DailyPlansLoader;
+import utils.ExerciseCyclesLoader;
 
 public class CreateDailyPlanPanel extends JPanel {
 
     private final String[] exerciseTypes;
     private final List<ExerciseCycle> exerciseCycles;
+    private List<ExerciseCycle> copy;
     private JScrollPane scrollSingle;
     private JPanel jpList;
     private GridBagConstraints constraint;
@@ -36,30 +41,27 @@ public class CreateDailyPlanPanel extends JPanel {
     private String day;
     private User user;
     private List<Program> programs;
+    private Program program;
     private JTextField inputSetNumberTextField;
     private JTextField inputRepsTextField;
     private JPanel addExerciseCyclePanel;
     private JPanel addExerciseCycleListPanel;
     private JPanel addExerciseCycleButtonPanel;
     private ExerciseCycle exerciseCycle;
+    private DailyPlan dailyPlan;
+    private int createdDailyPlanId;
 
-    public CreateDailyPlanPanel(List<DailyPlan> dailyPlans, String day, User user, List<Program> programs) {
+    public CreateDailyPlanPanel(List<DailyPlan> dailyPlans, String day, User user, List<Program> programs
+            , DailyPlan dailyPlan, Program program, List<ExerciseCycle> exerciseCycles) {
         this.dailyPlans = dailyPlans;
         this.day = day;
         this.user = user;
         this.programs = programs;
+        this.dailyPlan = dailyPlan;
+        this.program = program;
+        this.exerciseCycles = exerciseCycles;
 
         addexercises();
-
-        exerciseCycles = new ArrayList<>();
-
-//        for (DailyPlan dailyPlan : dailyPlans) {
-//            if (dailyPlan.day().equals(day)) {
-//                for (ExerciseCycle exerciseCycle1 : dailyPlan.exerciseCycles()) {
-//                    exerciseCycles.add(exerciseCycle1);
-//                }
-//            }
-//        }
 
         exerciseTypes = new String[]{"가슴", "등", "어깨", "하체", "팔"};
 
@@ -96,7 +98,7 @@ public class CreateDailyPlanPanel extends JPanel {
     }
 
     private JLabel exerciseCycleLabel(ExerciseCycle exerciseCycle) {
-        JLabel label = new JLabel(exerciseCycle.exercise().name() + " 세트수 " + exerciseCycle.set() + " 수행횟수 " + exerciseCycle.reps());
+        JLabel label = new JLabel(exerciseCycle.exercise() + " 세트수 " + exerciseCycle.set() + " 수행횟수 " + exerciseCycle.reps());
         label.setForeground(Color.white);
         return label;
     }
@@ -116,13 +118,15 @@ public class CreateDailyPlanPanel extends JPanel {
 
         for (ExerciseCycle exerciseCycle : exerciseCycles) {
             if (!exerciseCycle.status().equals("deleted")) {
-                JPanel panel = new JPanel();
-                panel.setBackground(new Color(0, 100, 0, 100));
-                panel.setPreferredSize(new Dimension(350, 30));
-                panel.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.BLACK)
-                        , BorderFactory.createEmptyBorder(2, 5, 5, 5)));
-                panel.add(exerciseCycleLabel(exerciseCycle));
-                addExerciseCycleListPanel.add(panel);
+                if (dailyPlan.id() == exerciseCycle.dailyPlanId()) {
+                    JPanel panel = new JPanel();
+                    panel.setBackground(new Color(0, 100, 0, 100));
+                    panel.setPreferredSize(new Dimension(350, 30));
+                    panel.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.BLACK)
+                            , BorderFactory.createEmptyBorder(2, 5, 5, 5)));
+                    panel.add(exerciseCycleLabel(exerciseCycle));
+                    addExerciseCycleListPanel.add(panel);
+                }
             }
         }
 
@@ -166,9 +170,9 @@ public class CreateDailyPlanPanel extends JPanel {
                     i += 1;
                 }
             }
-            addExerciseCyclePanel();
-
             this.add(scrollSingle);
+
+            addExerciseCyclePanel();
 
             this.setVisible(false);
             this.setVisible(true);
@@ -180,7 +184,16 @@ public class CreateDailyPlanPanel extends JPanel {
         JButton button = new JButton("추가");
         button.addActionListener(e -> {
             int index = 0;
+
+            copy = new ArrayList<>();
+
             for (ExerciseCycle exerciseCycle1 : exerciseCycles) {
+                if (dailyPlan.id() == exerciseCycle1.dailyPlanId()) {
+                    copy.add(exerciseCycle1);
+                }
+            }
+
+            for (ExerciseCycle exerciseCycle1 : copy) {
                 if (exerciseCycle1.exercise().equals(exercise)) {
                     index += 1;
                     break;
@@ -232,17 +245,37 @@ public class CreateDailyPlanPanel extends JPanel {
         JButton button = new JButton("계획 하기");
         button.addActionListener(e -> {
             this.removeAll();
+            List<ExerciseCycle> copy = new ArrayList<>();
 
-            DailyPlan dailyPlan = new DailyPlan(exerciseCycles, day, "created");
-            dailyPlans.add(dailyPlan);
+            for (ExerciseCycle exerciseCycle1 : exerciseCycles) {
+                if (dailyPlan.id() == exerciseCycle1.dailyPlanId()) {
+                    copy.add(exerciseCycle1);
+                }
+            }
+            dailyPlan.updateDay(day);
 
-            CreateProgramPanel createProgramPanel = new CreateProgramPanel(dailyPlans, user, programs);
+            dailyPlan.updateList(copy);
+
+            dailyPlan.updateStatus("CREATED");
+
+            saveDailyPlans();
+
+            CreateProgramPanel createProgramPanel = new CreateProgramPanel(dailyPlans, user, programs, program, exerciseCycles);
             this.add(createProgramPanel);
 
             this.setVisible(false);
             this.setVisible(true);
         });
         return button;
+    }
+
+    private void saveDailyPlans() {
+        DailyPlansLoader dailyPlansLoader = new DailyPlansLoader();
+        try {
+            dailyPlansLoader.save(dailyPlans);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private JTextField inputSetNumberTextField() {
@@ -265,6 +298,8 @@ public class CreateDailyPlanPanel extends JPanel {
                 }
             }
 
+            saveExerciseCycles();
+
             addExerciseCyclePanel();
 
             this.setVisible(false);
@@ -282,8 +317,18 @@ public class CreateDailyPlanPanel extends JPanel {
             int sets = Integer.parseInt(inputSetNumberTextField.getText());
             int reps = Integer.parseInt(inputRepsTextField.getText());
 
-            exerciseCycle = new ExerciseCycle(exercise, sets, reps, "added");
+            exerciseCycle = new ExerciseCycle(exercise.name(), sets, reps, "added", dailyPlan.id());
             exerciseCycles.add(exerciseCycle);
+
+            copy = new ArrayList<>();
+
+            for (ExerciseCycle exerciseCycle1 : exerciseCycles) {
+                if (dailyPlan.id() == exerciseCycle1.dailyPlanId()) {
+                    copy.add(exerciseCycle1);
+                }
+            }
+
+            saveExerciseCycles();
 
             addExerciseCyclePanel();
 
@@ -293,6 +338,15 @@ public class CreateDailyPlanPanel extends JPanel {
             frame.dispose();
         });
         return button;
+    }
+
+    private void saveExerciseCycles() {
+        ExerciseCyclesLoader exerciseCyclesLoader = new ExerciseCyclesLoader();
+        try {
+            exerciseCyclesLoader.save(exerciseCycles);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private JLabel exerciseNameLabel(Exercise exercise) {

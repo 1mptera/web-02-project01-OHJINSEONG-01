@@ -1,12 +1,14 @@
 package panels;
 
 import java.awt.BorderLayout;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import models.Comment;
 import models.Post;
 import models.User;
 
@@ -15,12 +17,14 @@ public class SharePostPanel extends JPanel {
     private List<Post> posts;
     private JPanel contentPanel;
     private User user;
+    private List<Comment> comments;
     private JPanel displayPanel;
 
-    public SharePostPanel(List<Post> posts, JPanel contentPanel, User user) {
+    public SharePostPanel(List<Post> posts, JPanel contentPanel, User user, List<Comment> comments) {
         this.posts = posts;
         this.contentPanel = contentPanel;
         this.user = user;
+        this.comments = comments;
 
         undeletedPosts = new ArrayList<>();
 
@@ -54,7 +58,12 @@ public class SharePostPanel extends JPanel {
             if (text.isBlank()) {
                 displayPanel.removeAll();
 
-                PostListPanel postListPanel = new PostListPanel(displayPanel, contentPanel, undeletedPosts, user);
+                PostListPanel postListPanel = null;
+                try {
+                    postListPanel = new PostListPanel(displayPanel, contentPanel, undeletedPosts, user, comments);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
                 displayPanel.add(postListPanel);
 
                 displayPanel.setVisible(false);
@@ -65,15 +74,19 @@ public class SharePostPanel extends JPanel {
                 String selection = String.valueOf(comboBox.getSelectedItem());
 
                 if (selection.equals(Post.USERNAME)) {
-                    searchPostsWithAuthorKeyword(undeletedPosts, text);
+                    try {
+                        searchPostsUserNameKeyword(undeletedPosts, text);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
 
                 if (selection.equals(Post.TITLE)) {
-                    searchPostsWithTitleKeyword(undeletedPosts, text);
+                    searchPostsTitleKeyword(undeletedPosts, text);
                 }
 
                 if (selection.equals(Post.TEXT)) {
-                    searchPostsWithTextKeyword(undeletedPosts, text);
+                    searchPostsTextKeyword(undeletedPosts, text);
                 }
             }
         });
@@ -89,7 +102,7 @@ public class SharePostPanel extends JPanel {
         button.addActionListener(e -> {
             this.removeAll();
 
-            CreatePostPanel createPostPanel = new CreatePostPanel(undeletedPosts, contentPanel, user);
+            CreatePostPanel createPostPanel = new CreatePostPanel(undeletedPosts, contentPanel, user,comments);
             contentPanel.add(createPostPanel);
 
             this.setVisible(false);
@@ -104,11 +117,16 @@ public class SharePostPanel extends JPanel {
         displayPanel.setOpaque(false);
         this.add(displayPanel);
 
-        PostListPanel postListPanel = new PostListPanel(displayPanel, contentPanel, undeletedPosts, user);
+        PostListPanel postListPanel = null;
+        try {
+            postListPanel = new PostListPanel(displayPanel, contentPanel, undeletedPosts, user, comments);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         displayPanel.add(postListPanel);
     }
 
-    public void searchPostsWithAuthorKeyword(List<Post> undeletedPosts, String text) {
+    public void searchPostsUserNameKeyword(List<Post> undeletedPosts, String text) throws IOException {
         displayPanel.removeAll();
 
         List<Post> copy = new ArrayList<>();
@@ -120,14 +138,14 @@ public class SharePostPanel extends JPanel {
             }
         }
 
-        PostListPanel postListPanel = new PostListPanel(displayPanel, contentPanel, copy, user);
+        PostListPanel postListPanel = new PostListPanel(displayPanel, contentPanel, copy, user, comments);
         displayPanel.add(postListPanel);
 
         displayPanel.setVisible(false);
         displayPanel.setVisible(true);
     }
 
-    public void searchPostsWithTitleKeyword(List<Post> undeletedPosts, String text) {
+    public void searchPostsTitleKeyword(List<Post> undeletedPosts, String text) {
         displayPanel.removeAll();
 
         List<Post> copy = new ArrayList<>();
@@ -139,7 +157,12 @@ public class SharePostPanel extends JPanel {
             }
         }
 
-        PostListPanel postListPanel = new PostListPanel(displayPanel, contentPanel, copy, user);
+        PostListPanel postListPanel = null;
+        try {
+            postListPanel = new PostListPanel(displayPanel, contentPanel, copy, user, comments);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         displayPanel.add(postListPanel);
 
         displayPanel.setVisible(false);
@@ -147,7 +170,7 @@ public class SharePostPanel extends JPanel {
     }
 
 
-    public void searchPostsWithTextKeyword(List<Post> undeletedPosts, String text) {
+    public void searchPostsTextKeyword(List<Post> undeletedPosts, String text) {
         displayPanel.removeAll();
 
         List<Post> copy = new ArrayList<>();
@@ -159,7 +182,12 @@ public class SharePostPanel extends JPanel {
             }
         }
 
-        PostListPanel postListPanel = new PostListPanel(displayPanel, contentPanel, copy, user);
+        PostListPanel postListPanel = null;
+        try {
+            postListPanel = new PostListPanel(displayPanel, contentPanel, copy, user, comments);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         displayPanel.add(postListPanel);
 
         displayPanel.setVisible(false);
