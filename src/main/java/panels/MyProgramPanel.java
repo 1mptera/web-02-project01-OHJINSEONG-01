@@ -18,7 +18,6 @@ import models.DailyPlan;
 import models.ExerciseCycle;
 import models.Program;
 import models.User;
-import utils.DailyPlansLoader;
 import utils.ProgramsLoader;
 
 public class MyProgramPanel extends JPanel {
@@ -42,10 +41,12 @@ public class MyProgramPanel extends JPanel {
         this.setOpaque(false);
         this.add(panel, BorderLayout.PAGE_START);
 
+        initProgramListPanel();
+
+        showProgramPanel();
+
         panel.add(selectProgramButton());
         panel.add(createProgramButton());
-
-        initProgramListPanel();
     }
 
     private void initProgramListPanel() {
@@ -57,11 +58,18 @@ public class MyProgramPanel extends JPanel {
     private JButton selectProgramButton() {
         JButton button = new JButton("프로그램 선택");
         button.addActionListener(e -> {
-            programListPanel.removeAll();
-            programListPanel.setLayout(new GridLayout(programs.size(), 1));
+            showProgramPanel();
+        });
+        return button;
+    }
 
-            for (Program program : programs) {
-                if (program.status().equals(Program.CREATED)) {
+    private void showProgramPanel() {
+        programListPanel.removeAll();
+        programListPanel.setLayout(new GridLayout(programs.size(), 1));
+
+        for (Program program : programs) {
+            if (program.status().equals(Program.CREATED) || program.status().equals(Program.SHARED)) {
+                if (user.id() == program.userId()) {
                     JPanel panel = new JPanel();
                     panel.setBackground(new Color(100, 0, 0, 150));
                     panel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
@@ -91,13 +99,47 @@ public class MyProgramPanel extends JPanel {
                     titlePanel.add(titleLabel(program));
                     userNamePanel.add(userNameLabel(program));
                     buttonPanel.add(runProgramButton(program));
-                    buttonPanel.add(new JButton("공유하기"));
-                    buttonPanel.add(new JButton("삭제"));
+                    buttonPanel.add(shareProgramButton(program));
+                    buttonPanel.add(deleteProgramButton(program));
                     programListPanel.add(panel);
                 }
                 this.setVisible(false);
                 this.setVisible(true);
             }
+        }
+    }
+
+    private JButton shareProgramButton(Program program) {
+        JButton button = new JButton("공유하기");
+        button.addActionListener(e -> {
+            this.removeAll();
+
+            program.updateStatus("SHARED");
+
+            savePrograms();
+
+            MyProgramPanel myProgramPanel = new MyProgramPanel(user, programs, dailyPlans, exerciseCycles);
+            this.add(myProgramPanel);
+
+            this.setVisible(false);
+            this.setVisible(true);
+        });
+        return button;
+    }
+
+    private JButton deleteProgramButton(Program program) {
+        JButton button = new JButton("삭제");
+        button.addActionListener(e -> {
+            this.removeAll();
+
+            program.delete();
+            savePrograms();
+
+            MyProgramPanel myProgramPanel = new MyProgramPanel(user, programs, dailyPlans, exerciseCycles);
+            this.add(myProgramPanel);
+
+            this.setVisible(false);
+            this.setVisible(true);
         });
         return button;
     }
@@ -109,6 +151,24 @@ public class MyProgramPanel extends JPanel {
 
             RunProgramPanel runProgramPanel = new RunProgramPanel(program);
             programListPanel.add(runProgramPanel);
+
+            runProgramPanel.completeButtonPanel().add(compeleteButton(program));
+
+            programListPanel.setVisible(false);
+            programListPanel.setVisible(true);
+        });
+        return button;
+    }
+
+    private JButton compeleteButton(Program program) {
+        JButton button = new JButton("완료");
+        button.addActionListener(e -> {
+            programListPanel.removeAll();
+
+            RunProgramPanel runProgramPanel = new RunProgramPanel(program);
+            programListPanel.add(runProgramPanel);
+
+            runProgramPanel.completeButtonPanel().add(compeleteButton(program));
 
             programListPanel.setVisible(false);
             programListPanel.setVisible(true);
@@ -140,7 +200,7 @@ public class MyProgramPanel extends JPanel {
 
             savePrograms();
 
-            JPanel createProgramPanel = new CreateProgramPanel(dailyPlans, user, programs, program,  exerciseCycles);
+            JPanel createProgramPanel = new CreateProgramPanel(dailyPlans, user, programs, program, exerciseCycles);
             this.add(createProgramPanel);
 
             this.setVisible(false);

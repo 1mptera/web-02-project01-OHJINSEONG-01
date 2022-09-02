@@ -4,6 +4,8 @@ import java.util.List;
 
 public class Program {
     public static final String CREATED = "CREATED";
+    public static final String DELETED = "DELETED";
+    public static final String SHARED = "SHARED";
 
     private String title;
     private List<DailyPlan> dailyPlans;
@@ -43,6 +45,14 @@ public class Program {
         return id;
     }
 
+    public int populurity() {
+        return populurity;
+    }
+
+    public int userId() {
+        return userId;
+    }
+
     public void updateTitle(String title) {
         this.title = title;
     }
@@ -57,5 +67,9 @@ public class Program {
 
     public String status() {
         return status;
+    }
+
+    public void delete() {
+        status = "DELETED";
     }
 }

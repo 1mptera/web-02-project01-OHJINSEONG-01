@@ -1,6 +1,5 @@
 import java.awt.BorderLayout;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -14,6 +13,7 @@ import models.User;
 import panels.ImagePanel;
 import panels.LogInPanel;
 import panels.MyProgramPanel;
+import panels.SearchProgramPanel;
 import panels.SharePostPanel;
 import panels.UserAccountPanel;
 import utils.CommentsLoader;
@@ -27,7 +27,6 @@ public class Roni {
     private JFrame frame;
     private JPanel contentPanel;
     private ImagePanel imagePanel;
-    private User user;
     private List<User> users;
     private JPanel menuPanel;
     private JPanel logInButtonPanel;
@@ -115,7 +114,13 @@ public class Roni {
         button.addActionListener(e -> {
             for (User user : users) {
                 if (user.status().equals(User.LOGIN)) {
+                    contentPanel.removeAll();
 
+                    SearchProgramPanel searchProgramPanel = new SearchProgramPanel(programs, user);
+                    contentPanel.add(searchProgramPanel);
+
+                    contentPanel.setVisible(false);
+                    contentPanel.setVisible(true);
                 }
             }
         });
@@ -129,7 +134,7 @@ public class Roni {
                 if (user.status().equals(User.LOGIN)) {
                     contentPanel.removeAll();
 
-                    JPanel myProgramPanel = new MyProgramPanel(user, programs, dailyPlans,exerciseCycles);
+                    JPanel myProgramPanel = new MyProgramPanel(user, programs, dailyPlans, exerciseCycles);
                     contentPanel.add(myProgramPanel);
 
                     contentPanel.setVisible(false);

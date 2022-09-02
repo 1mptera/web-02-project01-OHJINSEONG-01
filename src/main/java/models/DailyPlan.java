@@ -56,8 +56,4 @@ public class DailyPlan {
     public void updateStatus(String status) {
         this.status = status;
     }
-
-    public void dateId(int createdDailyPlanId) {
-        id = createdDailyPlanId;
-    }
 }

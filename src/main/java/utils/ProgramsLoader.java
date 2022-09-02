@@ -9,7 +9,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 import models.DailyPlan;
-import models.ExerciseCycle;
 import models.Program;
 
 public class ProgramsLoader {

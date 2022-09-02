@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="models.UserTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2022-08-31T04:00:32" hostname="jinseoncBookAir" time="0.002">
+<testsuite name="models.UserTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2022-09-02T04:53:26" hostname="jinseoncBookAir" time="0.024">
   <properties/>
-  <testcase name="count()" classname="models.UserTest" time="0.001"/>
+  <testcase name="delete()" classname="models.UserTest" time="0.01"/>
+  <testcase name="logOut()" classname="models.UserTest" time="0.0"/>
+  <testcase name="age()" classname="models.UserTest" time="0.004"/>
+  <testcase name="logIn()" classname="models.UserTest" time="0.0"/>
+  <testcase name="birthday()" classname="models.UserTest" time="0.004"/>
   <testcase name="selectGender()" classname="models.UserTest" time="0.0"/>
   <testcase name="creation()" classname="models.UserTest" time="0.001"/>
+  <testcase name="toCsvRow()" classname="models.UserTest" time="0.004"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

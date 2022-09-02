@@ -7,7 +7,6 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +48,6 @@ public class CreateDailyPlanPanel extends JPanel {
     private JPanel addExerciseCycleButtonPanel;
     private ExerciseCycle exerciseCycle;
     private DailyPlan dailyPlan;
-    private int createdDailyPlanId;
 
     public CreateDailyPlanPanel(List<DailyPlan> dailyPlans, String day, User user, List<Program> programs
             , DailyPlan dailyPlan, Program program, List<ExerciseCycle> exerciseCycles) {

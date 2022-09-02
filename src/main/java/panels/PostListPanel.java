@@ -112,14 +112,14 @@ public class PostListPanel extends JPanel {
 
         JPanel imageAndTitlePanel = new JPanel();
         imageAndTitlePanel.setLayout(new BorderLayout());
-        imageAndTitlePanel.setPreferredSize(new Dimension(430,40));
+        imageAndTitlePanel.setPreferredSize(new Dimension(430, 40));
         imageAndTitlePanel.setOpaque(false);
         labelPanel.add(imageAndTitlePanel, BorderLayout.WEST);
 
         JLabel imageLabel = new JLabel(new ImageIcon(questionImage));
-        imageAndTitlePanel.add(imageLabel,BorderLayout.WEST);
+        imageAndTitlePanel.add(imageLabel, BorderLayout.WEST);
 
-        JLabel postTitleLable = new JLabel(post.title());
+        JLabel postTitleLable = new JLabel("  " + post.title());
         postTitleLable.setForeground(Color.white);
         imageAndTitlePanel.add(postTitleLable);
 
@@ -127,7 +127,7 @@ public class PostListPanel extends JPanel {
         userNamePanel.setOpaque(false);
 
         JLabel userNameLabel = new JLabel("[" + post.userName() + "]");
-        userNameLabel.setBorder(BorderFactory.createEmptyBorder(8,0,0,0));
+        userNameLabel.setBorder(BorderFactory.createEmptyBorder(8, 0, 0, 0));
         userNameLabel.setForeground(Color.white);
         userNamePanel.add(userNameLabel);
         labelPanel.add(userNamePanel);
@@ -137,8 +137,8 @@ public class PostListPanel extends JPanel {
         postCountsLabel.setForeground(Color.white);
 
         JPanel postCountsPanel = new JPanel();
-        postCountsPanel.setBorder(BorderFactory.createEmptyBorder(8,0,0,0));
-        postCountsPanel.setPreferredSize(new Dimension(200,40));
+        postCountsPanel.setBorder(BorderFactory.createEmptyBorder(8, 0, 0, 0));
+        postCountsPanel.setPreferredSize(new Dimension(200, 40));
         postCountsPanel.setOpaque(false);
         postCountsPanel.add(postCountsLabel);
 

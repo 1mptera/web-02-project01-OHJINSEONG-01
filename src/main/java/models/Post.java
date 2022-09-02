@@ -22,7 +22,7 @@ public class Post {
 
 
     public Post(String title, String userName, String text, String status, int likeCount, int viewCount
-            , int userId, String time, int Id) {
+            , int userId, String time, int id) {
         this.title = title;
         this.userName = userName;
         this.text = text;
@@ -31,7 +31,7 @@ public class Post {
         this.viewCount = viewCount;
         this.userId = userId;
         this.time = time;
-        id = Id;
+        this.id = id;
     }
 
     public String title() {
@@ -109,7 +109,7 @@ public class Post {
         }
 
         if (!time.equals(words[0])) {
-            classifyTime = "      "+words[0];
+            classifyTime = "      " + words[0];
         }
 
         return classifyTime;

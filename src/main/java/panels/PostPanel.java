@@ -30,11 +30,9 @@ public class PostPanel extends JPanel {
     private JPanel contentPanel;
     private User user;
     private List<Comment> comments;
-    private JTextArea textTextArea;
     private JTextField titleTextField;
     private GridBagConstraints constraint;
     private GridBagLayout gbl;
-    private JTextField commentTextField;
     private JPanel textAreaPanel;
     private JTextArea inputCommentTextArea;
     private JLabel titleLabel;

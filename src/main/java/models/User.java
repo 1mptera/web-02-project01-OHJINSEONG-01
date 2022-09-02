@@ -16,8 +16,6 @@ public class User {
     private String password;
     private String status;
     private int id;
-    private int count;
-
 
     public User(String name, String identifyNumber, String gender, String userName, String password, String status, int id) {
         this.name = name;
@@ -49,6 +47,14 @@ public class User {
         return gender;
     }
 
+    public String status() {
+        return status;
+    }
+
+    public int id() {
+        return id;
+    }
+
     public void selectGender(String gender) {
         if (!this.gender.equals(gender)) {
             this.gender = gender;
@@ -59,20 +65,12 @@ public class User {
         status = "LOGIN";
     }
 
-    public String status() {
-        return status;
+    public void logOut() {
+        status = "LOGOUT";
     }
 
     public String toCsvRow() {
         return name + "," + identifyNumber + "," + gender + "," + userName + "," + password + "," + status + "," + id;
-    }
-
-    public int id() {
-        return id;
-    }
-
-    public void logOut() {
-        status = "LOGOUT";
     }
 
     public int age() {
@@ -104,17 +102,16 @@ public class User {
         status = "DELETED";
         userName = "삭제된 계정";
 
-        for(Comment comment : comments){
-            if(comment.userId() == id){
+        for (Comment comment : comments) {
+            if (comment.userId() == id) {
                 comment.updateUserName();
             }
         }
 
-        for(Post post : posts){
-            if(post.userId() == id){
+        for (Post post : posts) {
+            if (post.userId() == id) {
                 post.updateUserName();
             }
         }
     }
 }
-

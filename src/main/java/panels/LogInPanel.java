@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.TextField;
 import java.io.IOException;
 import java.util.List;
 import javax.swing.BorderFactory;
@@ -20,14 +21,13 @@ public class LogInPanel extends JPanel {
 
     private JPanel createIDPanel;
     private JTextField logInIDTextField;
-    private JTextField logInPasswordTextField;
+    private TextField logInPasswordTextField;
     private List<User> users;
     private JPanel contentPanel;
     private JPanel logInButtonPanel;
     private List<Comment> comments;
     private List<Post> posts;
     private JLabel alertLabel;
-
 
     public LogInPanel(List<User> users, JPanel contentPanel, JPanel logInButtonPanel, List<Comment> comments
             , List<Post> posts) {
@@ -52,6 +52,7 @@ public class LogInPanel extends JPanel {
         panel.add(logInUserNameLabel());
         panel.add(logInIDTextField());
         panel.add(logInPasswordLabel());
+
         panel.add(logInPasswordTextField());
 
         JPanel panel2 = new JPanel();
@@ -83,8 +84,10 @@ public class LogInPanel extends JPanel {
         return label;
     }
 
-    private JTextField logInPasswordTextField() {
-        logInPasswordTextField = new JTextField(10);
+    private TextField logInPasswordTextField() {
+        logInPasswordTextField = new TextField(10);
+        logInPasswordTextField.selectAll();
+        logInPasswordTextField.setEchoChar('*');
         return logInPasswordTextField;
     }
 
