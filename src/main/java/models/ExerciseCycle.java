@@ -1,19 +1,21 @@
 package models;
 
 public class ExerciseCycle {
-    private Exercise exercise;
+    private String exercise;
     private int set;
     private int reps;
     private String status;
+    private int dailyPlanId;
 
-    public ExerciseCycle(Exercise exercise, int set, int reps, String status) {
+    public ExerciseCycle(String exercise, int set, int reps, String status, int dailyPlanId) {
         this.exercise = exercise;
         this.set = set;
         this.reps = reps;
         this.status = status;
+        this.dailyPlanId = dailyPlanId;
     }
 
-    public Exercise exercise() {
+    public String exercise() {
         return exercise;
     }
 
@@ -31,5 +33,13 @@ public class ExerciseCycle {
 
     public String status() {
         return status;
+    }
+
+    public int dailyPlanId() {
+        return dailyPlanId;
+    }
+
+    public String toCsvRow() {
+        return exercise + "," + set + "," + reps + "," + status + "," + dailyPlanId;
     }
 }

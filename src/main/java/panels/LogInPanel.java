@@ -11,6 +11,8 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import models.Comment;
+import models.Post;
 import models.User;
 import utils.UsersLoader;
 
@@ -22,13 +24,18 @@ public class LogInPanel extends JPanel {
     private List<User> users;
     private JPanel contentPanel;
     private JPanel logInButtonPanel;
+    private List<Comment> comments;
+    private List<Post> posts;
     private JLabel alertLabel;
 
 
-    public LogInPanel(List<User> users, JPanel contentPanel, JPanel logInButtonPanel) {
+    public LogInPanel(List<User> users, JPanel contentPanel, JPanel logInButtonPanel, List<Comment> comments
+            , List<Post> posts) {
         this.users = users;
         this.contentPanel = contentPanel;
         this.logInButtonPanel = logInButtonPanel;
+        this.comments = comments;
+        this.posts = posts;
 
         JPanel panel = new JPanel();
         this.setBorder(BorderFactory.createEmptyBorder(100, 0, 0, 0));
@@ -107,6 +114,20 @@ public class LogInPanel extends JPanel {
         return button;
     }
 
+    private JButton getUserAccountButton(User user) {
+        JButton button = new JButton(user.name());
+        button.addActionListener(e -> {
+            contentPanel.removeAll();
+
+            JPanel userAccountPanel = new UserAccountPanel(user, users, contentPanel, logInButtonPanel, comments, posts);
+            contentPanel.add(userAccountPanel);
+
+            contentPanel.setVisible(false);
+            contentPanel.setVisible(true);
+        });
+        return button;
+    }
+
     private void saveUsers() {
         UsersLoader usersLoader = new UsersLoader();
         try {
@@ -116,20 +137,6 @@ public class LogInPanel extends JPanel {
         }
     }
 
-    private JButton getUserAccountButton(User user) {
-        JButton button = new JButton(user.name());
-        button.addActionListener(e -> {
-            contentPanel.removeAll();
-
-            JPanel userAccountPanel = new UserAccountPanel();
-            contentPanel.add(userAccountPanel);
-
-            contentPanel.setVisible(false);
-            contentPanel.setVisible(true);
-        });
-        return button;
-    }
-
     private boolean notLogInError(User user) {
         if (notExistUserName(user)) {
             return false;
@@ -137,7 +144,9 @@ public class LogInPanel extends JPanel {
         if (notInputTextField()) {
             return false;
         }
-
+        if (deletedAccount(user)) {
+            return false;
+        }
         return true;
     }
 
@@ -154,6 +163,10 @@ public class LogInPanel extends JPanel {
 
     private boolean wrongPassword(User user) {
         return !logInPasswordTextField.getText().equals(user.password());
+    }
+
+    private boolean deletedAccount(User user) {
+        return user.status().equals(User.DELETED);
     }
 
     private boolean notInputTextField() {

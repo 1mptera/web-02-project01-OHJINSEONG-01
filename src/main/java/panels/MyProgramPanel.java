@@ -6,6 +6,8 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.BorderFactory;
@@ -13,17 +15,25 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import models.DailyPlan;
+import models.ExerciseCycle;
 import models.Program;
 import models.User;
+import utils.DailyPlansLoader;
+import utils.ProgramsLoader;
 
 public class MyProgramPanel extends JPanel {
     private User user;
     private List<Program> programs;
+    private List<ExerciseCycle> exerciseCycles;
+    private List<DailyPlan> dailyPlans;
     private JPanel programListPanel;
+    private int createdProgramId;
 
-    public MyProgramPanel(User user, List<Program> programs) {
+    public MyProgramPanel(User user, List<Program> programs, List<DailyPlan> dailyPlans, List<ExerciseCycle> exerciseCycles) {
         this.user = user;
         this.programs = programs;
+        this.exerciseCycles = exerciseCycles;
+        this.dailyPlans = dailyPlans;
 
         this.setLayout(new BorderLayout());
 
@@ -51,42 +61,43 @@ public class MyProgramPanel extends JPanel {
             programListPanel.setLayout(new GridLayout(programs.size(), 1));
 
             for (Program program : programs) {
-                JPanel panel = new JPanel();
-                panel.setBackground(new Color(100, 0, 0, 150));
-                panel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+                if (program.status().equals(Program.CREATED)) {
+                    JPanel panel = new JPanel();
+                    panel.setBackground(new Color(100, 0, 0, 150));
+                    panel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
-                JPanel panel1 = new JPanel();
-                panel1.setOpaque(false);
-                panel.add(panel1);
-                panel1.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.BLACK)
-                        , BorderFactory.createEmptyBorder(5, 10, 5, 10)));
-                panel1.setPreferredSize(new Dimension(300, 130));
-                panel1.setLayout(new BorderLayout());
+                    JPanel panel1 = new JPanel();
+                    panel1.setOpaque(false);
+                    panel.add(panel1);
+                    panel1.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.BLACK)
+                            , BorderFactory.createEmptyBorder(5, 10, 5, 10)));
+                    panel1.setPreferredSize(new Dimension(300, 130));
+                    panel1.setLayout(new BorderLayout());
 
-                JPanel titlePanel = new JPanel();
-                titlePanel.setOpaque(false);
-                panel1.add(titlePanel, BorderLayout.PAGE_START);
+                    JPanel titlePanel = new JPanel();
+                    titlePanel.setOpaque(false);
+                    panel1.add(titlePanel, BorderLayout.PAGE_START);
 
-                JPanel userNamePanel = new JPanel();
-                userNamePanel.setBorder(BorderFactory.createEmptyBorder(20,90,0,0));
-                userNamePanel.setOpaque(false);
-                panel1.add(userNamePanel);
+                    JPanel userNamePanel = new JPanel();
+                    userNamePanel.setBorder(BorderFactory.createEmptyBorder(20, 90, 0, 0));
+                    userNamePanel.setOpaque(false);
+                    panel1.add(userNamePanel);
 
-                JPanel buttonPanel = new JPanel();
-                buttonPanel.setOpaque(false);
-                buttonPanel.setLayout(new FlowLayout());
-                panel1.add(buttonPanel, BorderLayout.SOUTH);
+                    JPanel buttonPanel = new JPanel();
+                    buttonPanel.setOpaque(false);
+                    buttonPanel.setLayout(new FlowLayout());
+                    panel1.add(buttonPanel, BorderLayout.SOUTH);
 
-                titlePanel.add(titleLabel(program));
-                userNamePanel.add(userNameLabel(program));
-                buttonPanel.add(runProgramButton(program));
-                buttonPanel.add(new JButton("공유하기"));
-                buttonPanel.add(new JButton("삭제"));
-                programListPanel.add(panel);
+                    titlePanel.add(titleLabel(program));
+                    userNamePanel.add(userNameLabel(program));
+                    buttonPanel.add(runProgramButton(program));
+                    buttonPanel.add(new JButton("공유하기"));
+                    buttonPanel.add(new JButton("삭제"));
+                    programListPanel.add(panel);
+                }
+                this.setVisible(false);
+                this.setVisible(true);
             }
-
-            this.setVisible(false);
-            this.setVisible(true);
         });
         return button;
     }
@@ -107,7 +118,7 @@ public class MyProgramPanel extends JPanel {
 
     private JLabel titleLabel(Program program) {
         JLabel label = new JLabel(program.title());
-        label.setFont(new Font("Serif",Font.BOLD,18));
+        label.setFont(new Font("Serif", Font.BOLD, 18));
         label.setForeground(Color.white);
         return label;
     }
@@ -123,10 +134,13 @@ public class MyProgramPanel extends JPanel {
         button.addActionListener(e -> {
             this.removeAll();
 
-            List<DailyPlan> dailyPlans = new ArrayList<>();
-            dailyPlans.add(new DailyPlan(new ArrayList<>(), "", "created"));
+            createProgramId();
+            Program program = new Program("", new ArrayList<>(), 0, user.userName(), user.id(), createdProgramId, "MAKING");
+            programs.add(program);
 
-            JPanel createProgramPanel = new CreateProgramPanel(dailyPlans, user, programs);
+            savePrograms();
+
+            JPanel createProgramPanel = new CreateProgramPanel(dailyPlans, user, programs, program,  exerciseCycles);
             this.add(createProgramPanel);
 
             this.setVisible(false);
@@ -134,5 +148,23 @@ public class MyProgramPanel extends JPanel {
 
         });
         return button;
+    }
+
+    private void savePrograms() {
+        ProgramsLoader programsLoader = new ProgramsLoader();
+        try {
+            programsLoader.save(programs);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void createProgramId() {
+        ProgramsLoader programsLoader = new ProgramsLoader();
+        try {
+            createdProgramId = programsLoader.createId();
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

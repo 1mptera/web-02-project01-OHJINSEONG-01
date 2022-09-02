@@ -3,18 +3,24 @@ package models;
 import java.util.List;
 
 public class Program {
+    public static final String CREATED = "CREATED";
+
     private String title;
     private List<DailyPlan> dailyPlans;
     private int populurity;
     private String userName;
     private int userId;
+    private int id;
+    private String status;
 
-    public Program(String title, List<DailyPlan> dailyPlans, int populurity, String userName,int userId) {
+    public Program(String title, List<DailyPlan> dailyPlans, int populurity, String userName, int userId, int id, String status) {
         this.title = title;
         this.dailyPlans = dailyPlans;
         this.populurity = populurity;
         this.userName = userName;
         this.userId = userId;
+        this.id = id;
+        this.status = status;
     }
 
     public String title() {
@@ -27,5 +33,29 @@ public class Program {
 
     public List<DailyPlan> dailyPlans() {
         return dailyPlans;
+    }
+
+    public String toCsvRow() {
+        return title + "," + populurity + "," + userName + "," + userId + "," + id + "," + status;
+    }
+
+    public int id() {
+        return id;
+    }
+
+    public void updateTitle(String title) {
+        this.title = title;
+    }
+
+    public void updateList(List<DailyPlan> copy) {
+        dailyPlans = copy;
+    }
+
+    public void updateStatus(String status) {
+        this.status = status;
+    }
+
+    public String status() {
+        return status;
     }
 }

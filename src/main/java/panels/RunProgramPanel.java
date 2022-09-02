@@ -74,7 +74,7 @@ public class RunProgramPanel extends JPanel {
     }
 
     private JLabel exerciseNameLabel(int i, ExerciseCycle exerciseCycle) {
-        JLabel label = new JLabel(i + ". " + exerciseCycle.exercise().name());
+        JLabel label = new JLabel(i + ". " + exerciseCycle.exercise());
         label.setForeground(Color.white);
         return label;
     }
