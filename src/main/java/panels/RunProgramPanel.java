@@ -15,7 +15,6 @@ import models.ExerciseCycle;
 import models.Program;
 
 public class RunProgramPanel extends JPanel {
-
     private final JPanel checkPanel;
 
     public RunProgramPanel(Program program) {
@@ -32,14 +31,25 @@ public class RunProgramPanel extends JPanel {
         checkPanel.setBackground(new Color(100, 0, 0, 100));
         this.add(checkPanel);
 
+        completeButtonPanel();
+
         for (DailyPlan dailyPlan : program.dailyPlans()) {
             if (!dailyPlan.day().equals("")) {
-                JPanel panel = new JPanel();
-                panel.setOpaque(false);
-                panel.add(dayButton(dailyPlan));
-                buttonPanel.add(panel);
+                if (program.id() == dailyPlan.programId()) {
+                    JPanel panel = new JPanel();
+                    panel.setOpaque(false);
+                    panel.add(dayButton(dailyPlan));
+                    buttonPanel.add(panel);
+                }
             }
         }
+    }
+
+    public JPanel completeButtonPanel() {
+        JPanel completeButtonPanel = new JPanel();
+        completeButtonPanel.setOpaque(false);
+        this.add(completeButtonPanel, BorderLayout.SOUTH);
+        return completeButtonPanel;
     }
 
     private JButton dayButton(DailyPlan dailyPlan) {
@@ -56,15 +66,17 @@ public class RunProgramPanel extends JPanel {
             int i = 1;
 
             for (ExerciseCycle exerciseCycle : dailyPlan.exerciseCycles()) {
-                JPanel panel1 = new JPanel();
-                panel1.setOpaque(false);
-                panel1.setLayout(new GridLayout(3, 1));
-                panel1.setPreferredSize(new Dimension(300, 100));
-                panel1.add(exerciseNameLabel(i, exerciseCycle));
-                panel1.add(repsAndSetLabel(exerciseCycle));
-                panel1.add(new JTextField(10));
-                i += 1;
-                panel.add(panel1);
+                if (exerciseCycle.dailyPlanId() == dailyPlan.id()) {
+                    JPanel panel1 = new JPanel();
+                    panel1.setOpaque(false);
+                    panel1.setLayout(new GridLayout(3, 1));
+                    panel1.setPreferredSize(new Dimension(300, 100));
+                    panel1.add(exerciseNameLabel(i, exerciseCycle));
+                    panel1.add(repsAndSetLabel(exerciseCycle));
+                    panel1.add(new JTextField(10));
+                    i += 1;
+                    panel.add(panel1);
+                }
             }
 
             checkPanel.setVisible(false);

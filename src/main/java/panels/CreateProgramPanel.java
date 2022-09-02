@@ -29,13 +29,11 @@ public class CreateProgramPanel extends JPanel {
     private User user;
     private List<Program> programs;
     private Program program;
-    private DailyPlan dailyPlan;
     private List<ExerciseCycle> exerciseCycles;
     private CreateDailyPlanPanel createDailyPlanPanel;
     private JTextField inputTitleTextField;
     private int createdDailyPlanId;
-    private DailyPlan dailyPlan1;
-    private DailyPlan dailyPlan11;
+    private DailyPlan dailyPlan;
 
     public CreateProgramPanel(List<DailyPlan> dailyPlans, User user, List<Program> programs, Program program
             , List<ExerciseCycle> exerciseCycles) {
@@ -43,7 +41,6 @@ public class CreateProgramPanel extends JPanel {
         this.user = user;
         this.programs = programs;
         this.program = program;
-        this.dailyPlan = dailyPlan;
         this.exerciseCycles = exerciseCycles;
 
         this.setOpaque(false);
@@ -179,12 +176,12 @@ public class CreateProgramPanel extends JPanel {
             if (index == 0) {
                 createDailyPlanId();
 
-                dailyPlan11 = new DailyPlan(new ArrayList<>(), day, "MAKING", program.id(), createdDailyPlanId);
-                dailyPlans.add(dailyPlan11);
+                dailyPlan = new DailyPlan(new ArrayList<>(), day, "MAKING", program.id(), createdDailyPlanId);
+                dailyPlans.add(dailyPlan);
 
                 saveDailyPlans();
 
-                createDailyPlanPanel = new CreateDailyPlanPanel(dailyPlans, day, user, programs, dailyPlan11, program, exerciseCycles);
+                createDailyPlanPanel = new CreateDailyPlanPanel(dailyPlans, day, user, programs, dailyPlan, program, exerciseCycles);
             }
 
 

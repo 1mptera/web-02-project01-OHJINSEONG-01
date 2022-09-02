@@ -1,7 +1,7 @@
 package models;
 
 public class Comment {
-    private static final String DELETED = "DELETED";
+    public static final String DELETED = "DELETED";
 
     private String text;
     private String userName;

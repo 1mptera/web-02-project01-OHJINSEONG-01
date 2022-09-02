@@ -194,4 +194,3 @@ public class SharePostPanel extends JPanel {
         displayPanel.setVisible(true);
     }
 }
-

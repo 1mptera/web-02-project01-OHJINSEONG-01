@@ -27,16 +27,16 @@ public class ExerciseCycle {
         return reps;
     }
 
-    public void deleted() {
-        status = "deleted";
-    }
-
     public String status() {
         return status;
     }
 
     public int dailyPlanId() {
         return dailyPlanId;
+    }
+
+    public void deleted() {
+        status = "deleted";
     }
 
     public String toCsvRow() {
